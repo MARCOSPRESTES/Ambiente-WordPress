@@ -1,0 +1,33 @@
+version: '3.9'
+
+volumes:
+  mysql_data:
+  wordpress_data:
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: wordpressdb
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_db_password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+
+  wordpress:
+    image: wordpress
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 8080:80
+    environment: 
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_db_password
+      WORDPRESS_DB_NAME: wordpressdb
+    volumes:
+      - ./wordpress_data:/var/lib/www/html 
